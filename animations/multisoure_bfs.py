@@ -25,24 +25,29 @@ def bfs(queue):
         for node in queue:
             vis.add_node_attribute(node, 'style', 'filled')
             vis.add_node_attribute(node, 'fillcolor', '#f5ad42')
+            vis.add_node_attribute(node, 'penwidth', '1.5')
    
         FRAME.append(vis.fill_visualizer())
+
         prev_level = []
    
         for var in range(len(queue)):
             u = queue.pop(0)
-            vis.add_node_attribute(node, 'fillcolor', '#015542')
-            vis.add_node_attribute(u, 'penwidth', '2.0')
+            prev_level.append(u)
+            vis.add_node_attribute(u, 'penwidth', '3.0')
             FRAME.append(vis.fill_visualizer())
             for v in Graph[u]:
                 if visited[v]:
                     continue
                 visited[v] = True
                 queue.append(v)
+                vis.add_edge_attribute([u,v],'penwidth','2.0')
                 vis.add_node_attribute(v, 'style', 'filled')
                 vis.add_node_attribute(v, 'fillcolor', '#42f57e')
                 FRAME.append(vis.fill_visualizer())
-            vis.add_node_attribute(u, 'fillcolor', '#42c5f5')
+                vis.remove_edge_attribute([u,v],'penwidth')
+            vis.add_node_attribute(u, 'fillcolor', '#015542')
+            vis.remove_node_attribute(u, 'penwidth')
             FRAME.append(vis.fill_visualizer())
 
 def dfs(u):

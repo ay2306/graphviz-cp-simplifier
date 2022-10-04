@@ -1,3 +1,5 @@
+from abc import abstractmethod
+from array import array
 from select import select
 import graphviz
 
@@ -37,6 +39,14 @@ class GraphBase:
         def get_node_B(self):
             return self.nodeB
 
+        def set_paramater(self, key, value):
+            self.parameters[key] = value
+
+        def remove_paramater(self, key):
+            if key not in self.parameters:
+                raise Exception(f"Cannot remove attribute `{key}` from Node {self.label}")
+            self.parameters[key] = None
+
     def __init__(self, vertices, edges, visualizer, index=0):
         self.edge_attributes = None
         self.node_attributes = None
@@ -47,6 +57,10 @@ class GraphBase:
         self.index = index
         # create_graph()
         self.create_attributes()
+
+    @abstractmethod
+    def find_index_of_edge(self, edge):
+        pass
 
     def create_attributes(self):
         self.node_attributes = [self.NodeAttribute(label=i) for i in range(self.vertices + self.index)]
@@ -65,6 +79,14 @@ class GraphBase:
         if node < self.index:
             raise Exception(f"Incorrect node - {node}")
         self.node_attributes[node].remove_paramater(key)
+
+    def add_edge_attribute(self, edge, key, value):
+        index = self.find_index_of_edge(edge)
+        self.edge_attributes[index].set_paramater(key, value)
+
+    def remove_edge_attribute(self, edge, key):
+        index = self.find_index_of_edge(edge)
+        self.edge_attributes[index].remove_paramater(key)
 
     def fill_visualizer(self):
         visualizer = self.visualizer(engine='neato')
@@ -95,3 +117,13 @@ class GraphBase:
 class UndirectUnweightedGraph(GraphBase):
     def __init__(self, vertices, edges, index=0):
         GraphBase.__init__(self, vertices, edges, graphviz.Graph, index)
+
+    def find_index_of_edge(self, edge):
+        index = 0
+        while index < len(self.edges):
+            if self.edges[index][0] == edge[0] and self.edges[index][1] == edge[1]:
+                return index
+            if self.edges[index][0] == edge[1] and self.edges[index][1] == edge[0]:
+                return index
+            index += 1
+        raise Exception(f"No Edge found between {edge[0]} and {edge[1]}")

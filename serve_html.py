@@ -22,7 +22,7 @@ def close_port_if_open(port = PORT, HOST = LOCALHOST):
     if sock.connect_ex((HOST, port)) == 0:
         print("PORT OPEN")
         p_id = get_pid(port)
-        psutil.Process(p_id).kill()
+        psutil.Process(p_id[0]).kill()
         
 def serve_file(filename, port = PORT):
     close_port_if_open(port)
