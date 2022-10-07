@@ -1,6 +1,6 @@
 from django.apps import AppConfig
 
 
-class AnimatorServiceConfig(AppConfig):
+class AnimationApiConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'animator_service'
+    name = 'animation_api'
