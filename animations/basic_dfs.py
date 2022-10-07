@@ -40,7 +40,7 @@ def animate():
     for node in range(1, vertices):
         parent = randint(0, node-1)
         Edges.append([parent, node])
-    vis = graph.UndirectUnweightedGraph(vertices, Edges)
+    vis = graph.UndirectedUnweightedGraph(vertices, Edges)
     Graph = [[] for i in range(vertices)]
     for edge in Edges:
         Graph[edge[0]].append(edge[1])
