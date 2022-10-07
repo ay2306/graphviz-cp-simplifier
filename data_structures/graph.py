@@ -114,7 +114,7 @@ class GraphBase:
         return visualizer.source
 
 
-class UndirectUnweightedGraph(GraphBase):
+class UndirectedUnweightedGraph(GraphBase):
     def __init__(self, vertices, edges, index=0):
         GraphBase.__init__(self, vertices, edges, graphviz.Graph, index)
 
@@ -124,6 +124,19 @@ class UndirectUnweightedGraph(GraphBase):
             if self.edges[index][0] == edge[0] and self.edges[index][1] == edge[1]:
                 return index
             if self.edges[index][0] == edge[1] and self.edges[index][1] == edge[0]:
+                return index
+            index += 1
+        raise Exception(f"No Edge found between {edge[0]} and {edge[1]}")
+
+
+class DirectedUnweightedGraph(GraphBase):
+    def __init__(self, vertices, edges, index=0):
+        GraphBase.__init__(self, vertices, edges, graphviz.Digraph, index)
+
+    def find_index_of_edge(self, edge):
+        index = 0
+        while index < len(self.edges):
+            if self.edges[index][0] == edge[0] and self.edges[index][1] == edge[1]:
                 return index
             index += 1
         raise Exception(f"No Edge found between {edge[0]} and {edge[1]}")

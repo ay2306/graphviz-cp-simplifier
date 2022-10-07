@@ -37,7 +37,7 @@ def populate_flags_with_default():
     global flags
     flags['input_directory'] = 'templates'
     flags['input_name'] = 'basic'
-    flags['output_name'] = 'multi_source_bfs'
+    flags['output_name'] = 'cycle_detection_direct'
     flags['output_directory'] = 'outputs'
     flags['delete_after_use'] = None
 

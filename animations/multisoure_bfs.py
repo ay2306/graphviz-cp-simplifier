@@ -86,7 +86,7 @@ def animate():
                 Edges.append([a, b])
                 break
 
-    vis = graph.UndirectUnweightedGraph(vertices, Edges)
+    vis = graph.UndirectedUnweightedGraph(vertices, Edges)
     Graph = [[] for i in range(vertices)]
     # print(vertices)
     for edge in Edges:
