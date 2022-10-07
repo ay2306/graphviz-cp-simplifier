@@ -1,6 +1,4 @@
 from abc import abstractmethod
-from array import array
-from select import select
 import graphviz
 
 
