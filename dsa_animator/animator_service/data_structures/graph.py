@@ -1,4 +1,5 @@
 from abc import abstractmethod
+from typing import Callable
 import graphviz
 
 
@@ -45,7 +46,7 @@ class GraphBase:
                 raise Exception(f"Cannot remove attribute `{key}` from Node {self.label}")
             self.parameters[key] = None
 
-    def __init__(self, vertices, edges, visualizer, index=0):
+    def __init__(self, vertices, edges, visualizer: Callable, index=0):
         self.edge_attributes = None
         self.node_attributes = None
         self.vertices = vertices
@@ -128,10 +129,10 @@ class UndirectedUnweightedGraph(GraphBase):
 
 
 class DirectedUnweightedGraph(GraphBase):
-    def __init__(self, vertices, edges, index=0):
+    def __init__(self, vertices: int, edges: int, index=0):
         GraphBase.__init__(self, vertices, edges, graphviz.Digraph, index)
 
-    def find_index_of_edge(self, edge):
+    def find_index_of_edge(self, edge: list):
         index = 0
         while index < len(self.edges):
             if self.edges[index][0] == edge[0] and self.edges[index][1] == edge[1]:
