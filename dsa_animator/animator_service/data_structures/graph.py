@@ -1,36 +1,29 @@
-from abc import abstractmethod
+from abc import abstractmethod, ABC
 from typing import Callable
+from animator_service.data_structures.attributes import Attributes
+from animator_service.data_structures.AnimationBase import AnimationBase
 import graphviz
 
 
-class GraphBase:
-    class NodeAttribute:
+class GraphBase(AnimationBase):
+    class NodeAttribute(Attributes):
+
         def __init__(self, label, shape=None, style=None, color=None):
-            self.parameters = {'shape': shape, 'style': style, 'color': color, 'penwidth': '1.0'}
+            super().__init__(label=label, style=style, color=color, shape=shape)
             self.label = str(label)
 
-        def get_parameters(self):
-            return self.parameters
-
-        def set_paramater(self, key, value):
-            self.parameters[key] = value
-
-        def remove_paramater(self, key):
-            if key not in self.parameters:
-                raise Exception(f"Cannot remove attribute `{key}` from Node {self.label}")
-            self.parameters[key] = None
+        def get_attribute_name(self):
+            return self.label
 
         def get_label(self):
             return self.label
 
-    class EdgeAttribute:
+    class EdgeAttribute(Attributes):
+
         def __init__(self, nodeA, nodeB, label=None, style=None, color='black'):
-            self.parameters = {'label': label, 'style': style, 'color': color}
+            super().__init__(label=label, style=style, color=color)
             self.nodeA = str(nodeA)
             self.nodeB = str(nodeB)
-
-        def get_parameters(self):
-            return self.parameters
 
         def get_node_A(self):
             return self.nodeA
@@ -38,15 +31,11 @@ class GraphBase:
         def get_node_B(self):
             return self.nodeB
 
-        def set_paramater(self, key, value):
-            self.parameters[key] = value
-
-        def remove_paramater(self, key):
-            if key not in self.parameters:
-                raise Exception(f"Cannot remove attribute `{key}` from Node {self.label}")
-            self.parameters[key] = None
+        def get_attribute_name(self):
+            return f"Edge [{self.nodeA}, {self.nodeB}]"
 
     def __init__(self, vertices, edges, visualizer: Callable, index=0):
+        super().__init__()
         self.edge_attributes = None
         self.node_attributes = None
         self.vertices = vertices
@@ -65,27 +54,51 @@ class GraphBase:
         self.node_attributes = [self.NodeAttribute(label=i) for i in range(self.vertices + self.index)]
         self.edge_attributes = [self.EdgeAttribute(nodeA=edge[0], nodeB=edge[1]) for edge in self.edges]
 
-    def add_node_attribute(self, node, key, value):
+    def validate_node(self, node):
         if node >= self.vertices + self.index:
             raise Exception(f"Incorrect node - {node}")
         if node < self.index:
             raise Exception(f"Incorrect node - {node}")
-        self.node_attributes[node].set_paramater(key, value)
+
+    def add_node_attribute(self, node, key, value):
+        self.validate_node(node)
+        self.node_attributes[node].set_parameter(key, value)
 
     def remove_node_attribute(self, node, key):
-        if node >= self.vertices + self.index:
-            raise Exception(f"Incorrect node - {node}")
-        if node < self.index:
-            raise Exception(f"Incorrect node - {node}")
-        self.node_attributes[node].remove_paramater(key)
+        self.validate_node(node)
+        self.node_attributes[node].remove_parameter(key)
 
     def add_edge_attribute(self, edge, key, value):
         index = self.find_index_of_edge(edge)
-        self.edge_attributes[index].set_paramater(key, value)
+        self.edge_attributes[index].set_parameter(key, value)
 
     def remove_edge_attribute(self, edge, key):
         index = self.find_index_of_edge(edge)
-        self.edge_attributes[index].remove_paramater(key)
+        self.edge_attributes[index].remove_parameter(key)
+
+    def highlight_node(self, node, delta='1.5'):
+        self.validate_node(node)
+        self.node_attributes[node].increase_highlight(delta)
+
+    def remove_highlight_node(self, node):
+        self.validate_node(node)
+        self.node_attributes[node].reset_highlight()
+
+    def highlight_edge(self, edge, delta='1.5'):
+        index = self.find_index_of_edge(edge)
+        self.edge_attributes[index].increase_highlight(delta)
+
+    def remove_highlight_edge(self, edge):
+        index = self.find_index_of_edge(edge)
+        self.edge_attributes[index].reset_highlight()
+
+    def add_node_color(self, node, color, style='filled'):
+        self.validate_node(node)
+        self.node_attributes[node].set_color(color, style)
+
+    def remove_node_color(self, node):
+        self.validate_node(node)
+        self.node_attributes[node].remove_color()
 
     def fill_visualizer(self):
         visualizer = self.visualizer(engine='neato')
@@ -95,7 +108,7 @@ class GraphBase:
                 first_node = False
                 continue
             not_none_params = {
-                k: v
+                k: str(v)
                 for k,
                     v in node_attr.get_parameters().items() if v is not None
             }
@@ -103,7 +116,7 @@ class GraphBase:
             # visualizer.node(node_attr.get_label())
         for edge_attr in self.edge_attributes:
             not_none_params = {
-                k: v
+                k: str(v)
                 for k,
                     v in edge_attr.get_parameters().items() if v is not None
             }

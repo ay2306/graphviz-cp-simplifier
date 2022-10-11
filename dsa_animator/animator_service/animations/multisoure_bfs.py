@@ -1,4 +1,5 @@
 from animator_service.data_structures import graph
+from animator_service.data_structures.DefaultAttributes import DefaultAttributes
 from random import randint
 
 
@@ -15,7 +16,7 @@ class MultiSourceBFSAnimation:
                 a = randint(0, self.vertices - 2)
                 b = randint(a + 1, self.vertices - 1)
                 if [a, b] not in self.Edges and a < self.vertices and b < self.vertices:
-                    if(a == self.vertices or b == self.vertices):
+                    if a == self.vertices or b == self.vertices:
                         raise Exception("WTF IS HAPPENING")
                     self.Edges.append([a, b])
                     break
@@ -35,15 +36,13 @@ class MultiSourceBFSAnimation:
         prev_level = []
 
         while len(queue):
-
             for node in prev_level:
-                self.vis.add_node_attribute(node, 'style', 'filled')
-                self.vis.add_node_attribute(node, 'fillcolor', '#42c5f5')
-                self.vis.remove_node_attribute(u, 'penwidth')
+                self.vis.highlight_node(node)
+                self.vis.add_node_color(node, DefaultAttributes.COLOR.LIGHT_BLUE)
+                self.vis.remove_highlight_node(node)
             for node in queue:
-                self.vis.add_node_attribute(node, 'style', 'filled')
-                self.vis.add_node_attribute(node, 'fillcolor', '#f5ad42')
-                self.vis.add_node_attribute(node, 'penwidth', '1.5')
+                self.vis.add_node_color(node, DefaultAttributes.COLOR.SEA_YELLOW)
+                self.vis.highlight_node(node)
 
             self.FRAME.append(self.vis.fill_visualizer())
 
@@ -52,21 +51,20 @@ class MultiSourceBFSAnimation:
             for var in range(len(queue)):
                 u = queue.pop(0)
                 prev_level.append(u)
-                self.vis.add_node_attribute(u, 'penwidth', '3.0')
-                self.FRAME.append(self.vis.fill_visualizer())
+                self.vis.highlight_node(u)
+                self.vis.add_frame()
                 for v in self.Graph[u]:
                     if self.visited[v]:
                         continue
                     self.visited[v] = True
                     queue.append(v)
-                    self.vis.add_edge_attribute([u, v], 'penwidth', '2.0')
-                    self.vis.add_node_attribute(v, 'style', 'filled')
-                    self.vis.add_node_attribute(v, 'fillcolor', '#42f57e')
-                    self.FRAME.append(self.vis.fill_visualizer())
-                    self.vis.remove_edge_attribute([u, v], 'penwidth')
-                self.vis.add_node_attribute(u, 'fillcolor', '#015542')
-                self.vis.remove_node_attribute(u, 'penwidth')
-                self.FRAME.append(self.vis.fill_visualizer())
+                    self.vis.highlight_edge([u, v])
+                    self.vis.add_node_color(v, DefaultAttributes.COLOR.LIGHT_GREEN)
+                    self.vis.add_frame()
+                    self.vis.remove_highlight_edge([u, v])
+                self.vis.add_node_color(u, DefaultAttributes.COLOR.SHERPA_BLUE)
+                self.vis.remove_highlight_node(u)
+                self.vis.add_frame()
 
     def animate(self):
         SOURCE_COUNT = randint(2, 3)
@@ -78,4 +76,4 @@ class MultiSourceBFSAnimation:
                     sources.append(a)
                     break
         self.bfs(sources)
-        return self.FRAME
+        return self.vis.get_frames()

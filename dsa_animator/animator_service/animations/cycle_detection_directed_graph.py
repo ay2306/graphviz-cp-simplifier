@@ -1,4 +1,5 @@
 from animator_service.data_structures import graph
+from animator_service.data_structures.DefaultAttributes import DefaultAttributes
 from random import randint
 
 
@@ -8,7 +9,6 @@ class CycleDetectionAnimation:
         self.vertices = vertices if vertices != 0 else randint(5, 8)
         self.parents = [-1 for i in range(self.vertices)]
         self.visited = [0 for i in range(self.vertices)]
-        self.FRAME = []
         self.Edges = []
         RANDOM_EDGE_COUNT = edge_count if edge_count != 0 \
             else randint(self.vertices, min(self.vertices * (self.vertices - 1), 2 * self.vertices))
@@ -31,54 +31,50 @@ class CycleDetectionAnimation:
         self.visited[u] = 1
         self.parents[u] = parent
         if parent == -1:
-            self.vis.add_node_attribute(u, 'penwidth', '2.0')
-            self.vis.add_node_attribute(u, 'fillcolor', '#42c5f5')
-            self.vis.add_node_attribute(u, 'style', 'filled')
-            self.FRAME.append(self.vis.fill_visualizer())
-            self.vis.remove_node_attribute(u, 'penwidth')
+            self.vis.highlight_node(u)
+            self.vis.add_node_color(u, DefaultAttributes.COLOR.LIGHT_BLUE)
+            self.vis.add_frame()
+            self.vis.remove_highlight_node(u)
         else:
-            self.vis.add_node_attribute(u, 'fillcolor', '#42c5f5')
-            self.vis.add_node_attribute(u, 'style', 'filled')
-            self.FRAME.append(self.vis.fill_visualizer())
+            self.vis.add_node_color(u, DefaultAttributes.COLOR.LIGHT_BLUE)
+            self.vis.add_frame()
         for v in self.Graph[u]:
-            self.vis.add_edge_attribute([u, v], 'penwidth', '2.0')
-            self.FRAME.append(self.vis.fill_visualizer())
-            self.vis.remove_edge_attribute([u, v], 'penwidth')
+            self.vis.highlight_edge([u, v])
+            self.vis.add_frame()
+            self.vis.remove_highlight_edge([u, v])
             if self.visited[v] == 1:
                 self.cycle_point = [u, v]
                 return True
             if self.visited[v] == 2:
                 continue
-            self.vis.add_node_attribute(v, 'penwidth', '2.0')
-            self.FRAME.append(self.vis.fill_visualizer())
-            self.vis.remove_node_attribute(v, 'penwidth')
+            self.vis.highlight_node(v)
+            self.vis.add_frame()
+            self.vis.remove_highlight_node(v)
             if self.detect_cycle(v, u):
                 return True
-        self.vis.add_node_attribute(u, 'fillcolor', '#42f57e')
-        self.FRAME.append(self.vis.fill_visualizer())
+        self.vis.add_node_color(u, DefaultAttributes.COLOR.LIGHT_GREEN)
+        self.vis.add_frame()
         self.visited[u] = 2
 
     def print_cycle(self):
         curr = self.cycle_point[0]
         end = self.cycle_point[1]
-        self.vis.add_edge_attribute([curr, end], 'penwidth', '2.5')
-        self.vis.add_node_attribute(curr, 'style', 'filled')
-        self.vis.add_node_attribute(end, 'fillcolor', '#25fac8')
-        self.FRAME.append(self.vis.fill_visualizer())
+        self.vis.highlight_edge([curr, end])
+        self.vis.add_node_color(end, DefaultAttributes.COLOR.RADIAN_GREEN)
+        self.vis.add_frame()
         while True:
             u = self.parents[curr]
             v = curr
             curr = u
-            self.vis.add_edge_attribute([u, v], 'penwidth', '2.5')
-            self.vis.add_node_attribute(u, 'style', 'filled')
-            self.vis.add_node_attribute(v, 'fillcolor', '#25fac8')
-            self.FRAME.append(self.vis.fill_visualizer())
+            self.vis.highlight_edge([u, v])
+            self.vis.add_node_color(v, DefaultAttributes.COLOR.RADIAN_GREEN)
+            self.vis.add_frame()
             if curr == end:
                 break
-        self.FRAME.append(self.vis.fill_visualizer())
-        self.FRAME.append(self.vis.fill_visualizer())
-        self.FRAME.append(self.vis.fill_visualizer())
-        self.FRAME.append(self.vis.fill_visualizer())
+        self.vis.add_frame()
+        self.vis.add_frame()
+        self.vis.add_frame()
+        self.vis.add_frame()
 
     def animate(self):
 
@@ -88,4 +84,4 @@ class CycleDetectionAnimation:
                     break
         if self.cycle_point is not None:
             self.print_cycle()
-        return self.FRAME
+        return self.vis.get_frames()
