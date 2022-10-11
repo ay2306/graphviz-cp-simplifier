@@ -6,6 +6,7 @@ from animator_service.animations import animation_handler
 
 
 def convert_array_to_string(arr):
+    print(arr)
     out = ""
     for i in arr:
         if len(out) > 1:
