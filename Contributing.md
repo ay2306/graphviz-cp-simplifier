@@ -11,8 +11,7 @@ Happy Contributing :slightly_smiling_face:
 ```bash
 # clone the repository to your local machine
 $ git clone https://github.com/<YOUR-GITHUB-USERNAME>/graphviz-cp-simplifier.git
-# navigate to the project's directory 
-# TODO(issue #12): Add how to install dependencies section
+# navigate to the project's directory
 $ cd graphviz-cp-simplifier
 
 # add upstream 
