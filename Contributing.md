@@ -29,6 +29,19 @@ Checkout to develop branch
 Next, create a new branch for the particular issue - `$ git checkout -b <NEW-BRANCH-NAME>` and make PR from that branch while leaving other branches unchanged :white_check_mark:
 - Branch name should be feature/FeatureName or fix/FixName 
 
+- Setting up the project and installing dependencies
+  - Setting up the virtual environment
+    ```bash
+    $ pip install virtualenv
+    $ virtualenv venv
+    $ source venv/Scripts/activate
+    ```
+    
+  - Installing dependencies
+    ```bash
+    $ pip install -r requirements.txt
+    ```
+
 - Once you have made your changes, run the following command:
 
 ```bash
