@@ -18,7 +18,7 @@ We have implemented the following animations. The project will support many othe
     $ python3 manage.py runserver
     ```
 4. Open the browser and navigate to 
-   1. DFS: localhost:8000/animate/ 
-   2. Multisource BFS: localhost:8000/animate/multi_source_bfs
-   3. Cycle Detection in a Directed Graph: localhost:8000/animate/cycle_detection_direct
+   1. DFS: <localhost:8000/animate>
+   2. Multisource BFS: <localhost:8000/animate/multi_source_bfs>
+   3. Cycle Detection in a Directed Graph: <localhost:8000/animate/cycle_detection_direct>
 
