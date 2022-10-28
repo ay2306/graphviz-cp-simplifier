@@ -22,7 +22,7 @@ class CycleDetectionAnimation:
                     self.Edges.append([a, b])
                     break
 
-        self.vis = graph.DirectedUnweightedGraph(self.vertices, self.Edges)
+        self.visualizer = graph.DirectedUnweightedGraph(self.vertices, self.Edges)
         self.Graph = [[] for i in range(self.vertices)]
         for edge in self.Edges:
             self.Graph[edge[0]].append(edge[1])
@@ -31,50 +31,50 @@ class CycleDetectionAnimation:
         self.visited[u] = 1
         self.parents[u] = parent
         if parent == -1:
-            self.vis.highlight_node(u)
-            self.vis.add_node_color(u, DefaultAttributes.COLOR.LIGHT_BLUE)
-            self.vis.add_frame()
-            self.vis.remove_highlight_node(u)
+            self.visualizer.highlight_node(u)
+            self.visualizer.add_node_color(u, DefaultAttributes.COLOR.LIGHT_BLUE)
+            self.visualizer.add_frame()
+            self.visualizer.remove_highlight_node(u)
         else:
-            self.vis.add_node_color(u, DefaultAttributes.COLOR.LIGHT_BLUE)
-            self.vis.add_frame()
+            self.visualizer.add_node_color(u, DefaultAttributes.COLOR.LIGHT_BLUE)
+            self.visualizer.add_frame()
         for v in self.Graph[u]:
-            self.vis.highlight_edge([u, v])
-            self.vis.add_frame()
-            self.vis.remove_highlight_edge([u, v])
+            self.visualizer.highlight_edge([u, v])
+            self.visualizer.add_frame()
+            self.visualizer.remove_highlight_edge([u, v])
             if self.visited[v] == 1:
                 self.cycle_point = [u, v]
                 return True
             if self.visited[v] == 2:
                 continue
-            self.vis.highlight_node(v)
-            self.vis.add_frame()
-            self.vis.remove_highlight_node(v)
+            self.visualizer.highlight_node(v)
+            self.visualizer.add_frame()
+            self.visualizer.remove_highlight_node(v)
             if self.detect_cycle(v, u):
                 return True
-        self.vis.add_node_color(u, DefaultAttributes.COLOR.LIGHT_GREEN)
-        self.vis.add_frame()
+        self.visualizer.add_node_color(u, DefaultAttributes.COLOR.LIGHT_GREEN)
+        self.visualizer.add_frame()
         self.visited[u] = 2
 
     def print_cycle(self):
         curr = self.cycle_point[0]
         end = self.cycle_point[1]
-        self.vis.highlight_edge([curr, end])
-        self.vis.add_node_color(end, DefaultAttributes.COLOR.RADIAN_GREEN)
-        self.vis.add_frame()
+        self.visualizer.highlight_edge([curr, end])
+        self.visualizer.add_node_color(end, DefaultAttributes.COLOR.RADIAN_GREEN)
+        self.visualizer.add_frame()
         while True:
             u = self.parents[curr]
             v = curr
             curr = u
-            self.vis.highlight_edge([u, v])
-            self.vis.add_node_color(v, DefaultAttributes.COLOR.RADIAN_GREEN)
-            self.vis.add_frame()
+            self.visualizer.highlight_edge([u, v])
+            self.visualizer.add_node_color(v, DefaultAttributes.COLOR.RADIAN_GREEN)
+            self.visualizer.add_frame()
             if curr == end:
                 break
-        self.vis.add_frame()
-        self.vis.add_frame()
-        self.vis.add_frame()
-        self.vis.add_frame()
+        self.visualizer.add_frame()
+        self.visualizer.add_frame()
+        self.visualizer.add_frame()
+        self.visualizer.add_frame()
 
     def animate(self):
 
@@ -84,4 +84,4 @@ class CycleDetectionAnimation:
                     break
         if self.cycle_point is not None:
             self.print_cycle()
-        return self.vis.get_frames()
+        return self.visualizer.get_frames()
