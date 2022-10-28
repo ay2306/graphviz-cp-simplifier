@@ -142,7 +142,7 @@ class UndirectedUnweightedGraph(GraphBase):
 
 
 class DirectedUnweightedGraph(GraphBase):
-    def __init__(self, vertices: int, edges: int, index=0):
+    def __init__(self, vertices: int, edges, index=0):
         GraphBase.__init__(self, vertices, edges, graphviz.Digraph, index)
 
     def find_index_of_edge(self, edge: list):
